@@ -9,7 +9,27 @@
 /* ── Reset & root ─────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ── LIGHT theme — DEFAULT ────────────────────────────────────────────── */
 :root {
+  --bg:       #f4f6f9;
+  --surface:  #ffffff;
+  --surface2: #eef1f6;
+  --border:   #d1dae8;
+  --amber:    #c47a0a;
+  --amber2:   #e8920e;
+  --cyan:     #0077a8;
+  --green:    #1a7a3f;
+  --red:      #c0392b;
+  --purple:   #5e35b1;
+  --text:     #0f1923;
+  --muted:    #5a7088;
+  --nav-bg:   rgba(244,246,249,0.92);
+  --mono:     'JetBrains Mono', monospace;
+  --sans:     'Space Grotesk', sans-serif;
+}
+
+/* ── DARK theme ───────────────────────────────────────────────────────── */
+html.dark {
   --bg:       #080d14;
   --surface:  #0f1923;
   --surface2: #162030;
@@ -22,9 +42,52 @@
   --purple:   #7c4dff;
   --text:     #e8f0f8;
   --muted:    #5a7a96;
-  --mono:     'JetBrains Mono', monospace;
-  --sans:     'Space Grotesk', sans-serif;
+  --nav-bg:   rgba(8,13,20,0.88);
 }
+
+/* ── LIGHT theme specific overrides ──────────────────────────────────── */
+html.light .hero-grid,
+:root .hero-grid {
+  background-image:
+    linear-gradient(rgba(196,122,10,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196,122,10,0.06) 1px, transparent 1px);
+}
+html.light .hero-glow,
+:root .hero-glow {
+  background: radial-gradient(circle, rgba(196,122,10,0.07) 0%, transparent 70%);
+}
+html.light .dsl-viewer,
+:root .dsl-viewer { background: #f0f4f8; }
+html.light .dsl-content,
+:root .dsl-content { background: #e8edf5; color: #1a2a3a; }
+html.light .dsl-block,
+:root .dsl-block { background: #e8edf5; }
+html.light .flow-demo,
+:root .flow-demo { background: #e8edf5; }
+html.light .kw, :root .kw  { color: #1565c0; }
+html.light .fb, :root .fb  { color: #1a7a3f; }
+html.light .cmt,:root .cmt { color: #78909c; }
+html.light .num,:root .num { color: #c47a0a; }
+html.light .prompt-line,
+:root .prompt-line { color: #5e35b1; }
+
+/* ── DARK theme specific overrides ───────────────────────────────────── */
+html.dark .hero-grid {
+  background-image:
+    linear-gradient(rgba(245,166,35,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245,166,35,0.04) 1px, transparent 1px);
+}
+html.dark .hero-glow {
+  background: radial-gradient(circle, rgba(245,166,35,0.08) 0%, transparent 70%);
+}
+html.dark .dsl-content { background: #040810; color: #aac4dd; }
+html.dark .dsl-block { background: #0d1117; }
+html.dark .flow-demo { background: #040810; }
+html.dark .kw  { color: #7eb8f7; }
+html.dark .fb  { color: #6dd598; }
+html.dark .cmt { color: #4a6a80; }
+html.dark .num { color: #ffa870; }
+html.dark .prompt-line { color: #b09af5; }
 
 html { scroll-behavior: smooth; }
 
@@ -46,9 +109,10 @@ nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
   padding: 16px 48px;
-  background: rgba(8,13,20,0.85);
+  background: var(--nav-bg);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
+  transition: background 0.3s;
 }
 .nav-logo {
   font-family: var(--mono);
@@ -637,9 +701,71 @@ footer {
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border); }
 }
+
+/* ── SVG ladder element background fills ─────────────────────────────── */
+.svg-bg-fill { fill: var(--bg); }
+html.dark .svg-bg-fill { fill: #080d14; }
+html.light .svg-bg-fill, :root .svg-bg-fill { fill: #f4f6f9; }
+
+/* SVG text colors */
+.svg-label { fill: var(--muted); }
+.svg-prompt { fill: var(--muted); }
+.theme-toggle {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.theme-toggle:hover { border-color: var(--amber); color: var(--amber); }
+
+/* ── Global smooth theme transition ──────────────────────────────────── */
+body, nav, section, footer, div, span, p, h1, h2, h3, h4, a {
+  transition: background-color 0.25s ease, border-color 0.25s ease,
+              color 0.25s ease, box-shadow 0.25s ease;
+}
 </style>
 </head>
-<body>
+<body class="">
+
+<script>
+// ── Theme — light is default ───────────────────────────────────────────
+function applyTheme(theme) {
+  const html = document.documentElement;
+  const icon  = document.getElementById('themeIcon');
+  const label = document.getElementById('themeLabel');
+  if (theme === 'dark') {
+    html.classList.add('dark');
+    html.classList.remove('light');
+    if (icon)  icon.textContent  = '☀️';
+    if (label) label.textContent = 'LIGHT';
+  } else {
+    html.classList.add('light');
+    html.classList.remove('dark');
+    if (icon)  icon.textContent  = '🌙';
+    if (label) label.textContent = 'DARK';
+  }
+  localStorage.setItem('selai-theme', theme);
+}
+
+function toggleTheme() {
+  const isDark = document.documentElement.classList.contains('dark');
+  applyTheme(isDark ? 'light' : 'dark');
+}
+
+// Apply saved theme or default to light
+(function() {
+  const saved = localStorage.getItem('selai-theme') || 'light';
+  applyTheme(saved);
+})();
+</script>
 
 <!-- NAV -->
 <nav>
@@ -652,6 +778,10 @@ footer {
     <a href="#results">Results</a>
     <a href="#roadmap">Roadmap</a>
   </div>
+  <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+    <span id="themeIcon">🌙</span>
+    <span id="themeLabel">DARK</span>
+  </button>
 </nav>
 
 <!-- HERO -->
@@ -709,7 +839,7 @@ footer {
       <g opacity="0">
         <line x1="105" y1="44" x2="105" y2="76" stroke="#f5a623" stroke-width="2"/>
         <line x1="155" y1="44" x2="155" y2="76" stroke="#f5a623" stroke-width="2"/>
-        <text x="130" y="36" fill="#5a7a96" font-family="JetBrains Mono" font-size="10" text-anchor="middle">START</text>
+        <text x="130" y="36" class="svg-label" font-family="JetBrains Mono" font-size="10" text-anchor="middle">START</text>
         <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.9s" fill="freeze"/>
       </g>
 
@@ -718,27 +848,27 @@ footer {
         <line x1="225" y1="44" x2="225" y2="76" stroke="#f5a623" stroke-width="2"/>
         <line x1="275" y1="44" x2="275" y2="76" stroke="#f5a623" stroke-width="2"/>
         <line x1="225" y1="50" x2="275" y2="70" stroke="#f5a623" stroke-width="1.5"/>
-        <text x="250" y="36" fill="#5a7a96" font-family="JetBrains Mono" font-size="10" text-anchor="middle">NOT FAULT</text>
+        <text x="250" y="36" class="svg-label" font-family="JetBrains Mono" font-size="10" text-anchor="middle">NOT FAULT</text>
         <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="2.8s" fill="freeze"/>
       </g>
 
       <!-- TON block — x=338 to x=462, y=30 to y=90 -->
       <g opacity="0">
-        <rect x="338" y="30" width="124" height="60" rx="4" fill="#080d14" stroke="#f5a623" stroke-width="1.5"/>
+        <rect x="338" y="30" width="124" height="60" rx="4" class="svg-bg-fill" stroke="#f5a623" stroke-width="1.5"/>
         <text x="400" y="55" fill="#6dd598" font-family="JetBrains Mono" font-size="12" font-weight="700" text-anchor="middle">TON</text>
-        <text x="400" y="72" fill="#5a7a96" font-family="JetBrains Mono" font-size="8" text-anchor="middle">PT=DELAY_TIME</text>
+        <text x="400" y="72" class="svg-label" font-family="JetBrains Mono" font-size="8" text-anchor="middle">PT=DELAY_TIME</text>
         <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="3.4s" fill="freeze"/>
       </g>
 
       <!-- Coil — cx=575, cy=60, r=22 — filled background masks wire -->
       <g opacity="0">
-        <circle cx="575" cy="60" r="22" fill="#080d14" stroke="#00e5ff" stroke-width="2"/>
-        <text x="575" y="93" fill="#5a7a96" font-family="JetBrains Mono" font-size="10" text-anchor="middle">MOTOR</text>
+        <circle cx="575" cy="60" r="22" class="svg-bg-fill" stroke="#00e5ff" stroke-width="2"/>
+        <text x="575" y="93" class="svg-label" font-family="JetBrains Mono" font-size="10" text-anchor="middle">MOTOR</text>
         <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="3.8s" fill="freeze"/>
       </g>
 
       <!-- Prompt text -->
-      <text x="350" y="112" fill="#4a6a80" font-family="JetBrains Mono" font-size="9" text-anchor="middle" opacity="0">
+      <text x="350" y="112" class="svg-prompt" font-family="JetBrains Mono" font-size="9" text-anchor="middle" opacity="0">
         "Turn on MOTOR after DELAY_TIME when START is active and FAULT is clear"
         <animate attributeName="opacity" from="0" to="1" dur="0.8s" begin="4.2s" fill="freeze"/>
       </text>

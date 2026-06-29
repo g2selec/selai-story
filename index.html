@@ -56,20 +56,15 @@ html.light .hero-glow,
 :root .hero-glow {
   background: radial-gradient(circle, rgba(196,122,10,0.07) 0%, transparent 70%);
 }
-html.light .dsl-viewer,
-:root .dsl-viewer { background: #f0f4f8; }
-html.light .dsl-content,
-:root .dsl-content { background: #e8edf5; color: #1a2a3a; }
-html.light .dsl-block,
-:root .dsl-block { background: #e8edf5; }
-html.light .flow-demo,
-:root .flow-demo { background: #e8edf5; }
-html.light .kw, :root .kw  { color: #1565c0; }
-html.light .fb, :root .fb  { color: #1a7a3f; }
-html.light .cmt,:root .cmt { color: #78909c; }
-html.light .num,:root .num { color: #c47a0a; }
-html.light .prompt-line,
-:root .prompt-line { color: #5e35b1; }
+html.light .dsl-viewer { background: #f0f4f8; }
+html.light .dsl-content { background: #e8edf5; color: #1a2a3a; }
+html.light .dsl-block { background: #e8edf5; }
+html.light .flow-demo { background: #e8edf5; }
+html.light .kw  { color: #1565c0; }
+html.light .fb  { color: #1a7a3f; }
+html.light .cmt { color: #78909c; }
+html.light .num { color: #c47a0a; }
+html.light .prompt-line { color: #5e35b1; }
 
 /* ── DARK theme specific overrides ───────────────────────────────────── */
 html.dark .hero-grid {
@@ -80,8 +75,10 @@ html.dark .hero-grid {
 html.dark .hero-glow {
   background: radial-gradient(circle, rgba(245,166,35,0.08) 0%, transparent 70%);
 }
+html.dark .dsl-viewer { background: #040810; }
 html.dark .dsl-content { background: #040810; color: #aac4dd; }
-html.dark .dsl-block { background: #0d1117; }
+html.dark .dsl-viewer-header { background: #0a1220; }
+html.dark .dsl-viewer-tabs { background: #040810; }
 html.dark .flow-demo { background: #040810; }
 html.dark .kw  { color: #7eb8f7; }
 html.dark .fb  { color: #6dd598; }
@@ -448,7 +445,7 @@ section.full { max-width: none; padding-left: 0; padding-right: 0; }
 
 /* DSL card viewer */
 .dsl-viewer {
-  background: #040810;
+  background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: 12px;
   overflow: hidden;
@@ -493,7 +490,8 @@ section.full { max-width: none; padding-left: 0; padding-right: 0; }
   font-family: var(--mono);
   font-size: 0.8rem;
   line-height: 1.8;
-  color: #aac4dd;
+  color: var(--text);
+  background: var(--surface2);
   display: none;
   min-height: 280px;
 }
